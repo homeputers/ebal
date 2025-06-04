@@ -1,0 +1,8 @@
+# Ignore PHP dependencies and runtime files
+/vendor/
+/backend/vendor/
+/backend/runtime/
+*.log
+*.cache
+.DS_Store
+composer.lock
