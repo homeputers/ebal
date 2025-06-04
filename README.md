@@ -31,3 +31,17 @@ Run the following command from the `backend` directory to apply migrations:
 
 This will create the required tables such as the `user`, `member`, and `group`
 tables as well as the join table for member assignments.
+
+## Frontend
+
+A lightweight React frontend lives in the `frontend` directory.  It is a small
+Node project managed with **yarn** and built with **Vite**.  Install the
+dependencies and start the dev server with live reload using:
+
+```bash
+cd frontend
+yarn install
+yarn dev
+```
+
+Run `yarn build` to create a production bundle under `dist/`.
