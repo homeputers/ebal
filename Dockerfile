@@ -8,8 +8,9 @@ RUN yarn build
 
 # Stage 2 - install backend dependencies
 FROM php:8.1-cli AS backend
+ENV PATH="/usr/local/bin:$PATH"
 WORKDIR /app/backend
-RUN apt-get update && apt-get install -y git unzip \
+RUN apt-get update && apt-get install -y git unzip curl \
     && rm -rf /var/lib/apt/lists/*
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 COPY backend/ .
