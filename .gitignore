@@ -6,3 +6,6 @@
 *.cache
 .DS_Store
 composer.lock
+
+# Ignore compiled frontend JS
+/frontend/dist/

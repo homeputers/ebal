@@ -31,3 +31,7 @@ Run the following command from the `backend` directory to apply migrations:
 
 This will create the required tables such as the `user`, `member`, and `group`
 tables as well as the join table for member assignments.
+
+## Frontend
+
+A lightweight React frontend lives in the `frontend` directory. It uses TypeScript but still relies on CDN scripts for React, React Router and Bootstrap, so there are no npm dependencies. The compiled files under `frontend/dist` are not version controlled, so run `tsc` inside the `frontend` folder to generate them and then open `frontend/index.html`.
