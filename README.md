@@ -1,8 +1,16 @@
 # ebal
 
-This project is a simple Yii2 based REST API backend. It uses MySQL for
-storage and JSON Web Tokens (JWT) for authentication. Example endpoints are
-defined in `SiteController` and demonstrate role based access control.
+"Ebal" stands for "Every Breath and Life" and is a tiny planning portal for our
+worship ministry.  It is a lightweight Yii2 powered REST API that keeps track of
+team members and the groups they serve in.  Think of it as a mini Planning
+Center tailor‑made for our church with room to grow to other congregations.
+
+The service relies on MySQL and secures requests using JSON Web Tokens (JWT).
+Admins can manage members, create groups like *guitarists* or *singers*, and
+assign people to any number of teams.  Whether it's rehearsals or Sunday
+service, ebal keeps everyone on the same page.
+
+API endpoints for these modules are documented in `openapi.yaml`.
 
 ## Database Migrations
 
@@ -12,4 +20,5 @@ Run the following command from the `backend` directory to apply migrations:
 ./yii migrate
 ```
 
-This will create the required tables such as the `user` table.
+This will create the required tables such as the `user`, `member`, and `group`
+tables as well as the join table for member assignments.
