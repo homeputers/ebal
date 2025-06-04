@@ -58,6 +58,24 @@ return [
                 [
                     'class' => yii\rest\UrlRule::class,
                     'controller' => [
+                        'song-categories' => 'song-category',
+                        'songs' => 'song',
+                    ],
+                ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => [
+                        'song-lists' => 'song-list',
+                    ],
+                    'extraPatterns' => [
+                        'POST {id}/songs' => 'add-song',
+                        'PUT {id}/songs/<song_id>' => 'update-song',
+                        'DELETE {id}/songs/<song_id>' => 'remove-song',
+                    ],
+                ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => [
                         'lineup-templates' => 'lineup-template',
                     ],
                     'extraPatterns' => [
