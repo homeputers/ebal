@@ -177,6 +177,272 @@ paths:
       responses:
         '204':
           description: Removed
+  /lineup-templates:
+    get:
+      summary: List lineup templates
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LineupTemplate'
+    post:
+      summary: Create lineup template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineupTemplate'
+      responses:
+        '201':
+          description: Created
+  /lineup-templates/{id}:
+    get:
+      summary: Get lineup template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineupTemplate'
+    put:
+      summary: Update lineup template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineupTemplate'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete lineup template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+  /lineup-templates/{id}/groups:
+    post:
+      summary: Add group to template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                group_id:
+                  type: integer
+                count:
+                  type: integer
+      responses:
+        '201':
+          description: Added
+  /lineup-templates/{id}/groups/{group_id}:
+    put:
+      summary: Update group on template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: integer
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Remove group from template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Removed
+  /lineups:
+    get:
+      summary: List lineups
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lineup'
+    post:
+      summary: Create lineup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lineup'
+      responses:
+        '201':
+          description: Created
+  /lineups/{id}:
+    get:
+      summary: Get lineup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lineup'
+    put:
+      summary: Update lineup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lineup'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete lineup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+  /lineups/{id}/members:
+    post:
+      summary: Add member to lineup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                member_id:
+                  type: integer
+                group_id:
+                  type: integer
+      responses:
+        '201':
+          description: Added
+  /lineups/{id}/members/{member_id}:
+    put:
+      summary: Replace or update member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: member_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                member_id:
+                  type: integer
+                group_id:
+                  type: integer
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Remove member from lineup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: member_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Removed
 components:
   schemas:
     Member:
@@ -199,3 +465,20 @@ components:
           type: string
         description:
           type: string
+    LineupTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Lineup:
+      type: object
+      properties:
+        id:
+          type: integer
+        service_datetime:
+          type: string
+          format: date-time
+        template_id:
+          type: integer

@@ -10,6 +10,11 @@ Admins can manage members, create groups like *guitarists* or *singers*, and
 assign people to any number of teams.  Whether it's rehearsals or Sunday
 service, ebal keeps everyone on the same page.
 
+Recent additions include lineup templates which define the desired number of
+people from each group, and service lineups that assign actual members for a
+particular worship service. Templates make it easy to prefill a lineup and then
+swap out members as needed.
+
 API endpoints for these modules are documented in `openapi.yaml`.
 
 ## Database Migrations
