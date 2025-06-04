@@ -39,6 +39,28 @@ return [
                 ],
             ],
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
+            'showScriptName' => false,
+            'rules' => [
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => [
+                        'members' => 'member',
+                        'groups' => 'group',
+                    ],
+                    'extraPatterns' => [
+                        'POST {id}/members' => 'add-member',
+                        'DELETE {id}/members/<member_id>' => 'remove-member',
+                    ],
+                ],
+                'POST login' => 'site/login',
+                'GET public' => 'site/public',
+                'GET dashboard' => 'site/dashboard',
+                'GET admin' => 'site/admin',
+            ],
+        ],
     ],
     'params' => $params,
 ];
