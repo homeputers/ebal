@@ -55,5 +55,6 @@ containers with:
 docker-compose up --build
 ```
 
-The API will be available at [http://localhost:8080](http://localhost:8080).
-Migrations are executed automatically on startup.
+When running with Docker, the React frontend is served at
+[http://localhost:8080](http://localhost:8080) and API requests are available
+under `/api`. Migrations are executed automatically on startup.

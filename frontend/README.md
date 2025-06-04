@@ -16,7 +16,7 @@ TypeScript sources live under `src/` and are bundled into `dist/` when running
 three pages:
 
 * **Home** – basic information and a link to the login form.
-* **Login** – posts credentials to the backend `/login` endpoint and stores the returned JWT.
+* **Login** – posts credentials to the backend `/api/login` endpoint and stores the returned JWT.
 * **Dashboard** – shows a message from the backend when authenticated.
 
 The UI automatically switches between light and dark Bootstrap themes based on your operating system preferences.

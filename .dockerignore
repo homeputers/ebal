@@ -1,0 +1,16 @@
+# Ignore version control and local dependencies
+.git
+.gitignore
+Dockerfile
+README.md
+docker-compose.yml
+
+# Backend artifacts
+backend/vendor/
+backend/runtime/
+*.log
+*.cache
+
+# Frontend build and deps
+frontend/node_modules/
+frontend/dist/
