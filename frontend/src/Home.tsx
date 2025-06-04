@@ -1,7 +1,4 @@
-declare const React: any;
-declare const ReactRouterDOM: any;
-
-const { Link } = ReactRouterDOM;
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (

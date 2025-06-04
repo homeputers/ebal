@@ -34,9 +34,9 @@ tables as well as the join table for member assignments.
 
 ## Frontend
 
-A lightweight React frontend lives in the `frontend` directory.  It is now a tiny
-Node project managed with **yarn**.  Install the dependencies and start the dev
-server with live reload using:
+A lightweight React frontend lives in the `frontend` directory.  It is a small
+Node project managed with **yarn** and built with **Vite**.  Install the
+dependencies and start the dev server with live reload using:
 
 ```bash
 cd frontend
@@ -44,5 +44,4 @@ yarn install
 yarn dev
 ```
 
-The TypeScript sources are compiled to `dist/` (ignored by git) and served by
-`lite-server`.  Run `yarn build` to generate the files once for production.
+Run `yarn build` to create a production bundle under `dist/`.

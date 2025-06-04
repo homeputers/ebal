@@ -1,17 +1,13 @@
-declare const React: any;
-declare const ReactDOM: any;
-declare const ReactRouterDOM: any;
-
-import useTheme from './useTheme.js';
-import Home from './Home.js';
-import Login from './Login.js';
-import Dashboard from './Dashboard.js';
-
-const { BrowserRouter, Routes, Route, Navigate } = ReactRouterDOM;
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import useTheme from './useTheme';
+import Home from './Home';
+import Login from './Login';
+import Dashboard from './Dashboard';
 
 export default function App() {
   useTheme();
-  const [token, setToken] = React.useState(localStorage.getItem('token') || '');
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
 
   return (
     <BrowserRouter>
@@ -24,5 +20,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />);

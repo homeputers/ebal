@@ -1,16 +1,14 @@
-declare const React: any;
-declare const ReactRouterDOM: any;
-
-const { useNavigate } = ReactRouterDOM;
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginProps {
   setToken: (token: string) => void;
 }
 
 export default function Login({ setToken }: LoginProps) {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: Event) => {

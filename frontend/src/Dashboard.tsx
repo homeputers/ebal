@@ -1,17 +1,15 @@
-declare const React: any;
-declare const ReactRouterDOM: any;
-
-const { Navigate } = ReactRouterDOM;
+import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
 interface DashboardProps {
   token: string;
 }
 
 export default function Dashboard({ token }: DashboardProps) {
-  const [message, setMessage] = React.useState('');
-  const [user, setUser] = React.useState('');
+  const [message, setMessage] = useState('');
+  const [user, setUser] = useState('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!token) return;
     fetch('/dashboard', { headers: { 'Authorization': 'Bearer ' + token } })
       .then(res => res.json())

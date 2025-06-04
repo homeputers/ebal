@@ -1,8 +1,8 @@
 # Ebal Frontend
 
-This folder contains a tiny React application written in TypeScript.  It is now
-a small Node project managed with **yarn** and served using `lite-server` for
-automatic reloads.
+This folder contains a small React application written in TypeScript.  It is a
+Node project managed with **yarn** and uses **Vite** for automatic reloads and
+bundling.
 
 Install dependencies and start the dev server from this directory:
 
@@ -11,9 +11,9 @@ yarn install
 yarn dev
 ```
 
-TypeScript sources live under `src/` and compile to `dist/`.  Open `index.html`
-after running `yarn build` or let the dev server compile on the fly.  The app
-provides three pages:
+TypeScript sources live under `src/` and are bundled into `dist/` when running
+`yarn build`.  During development Vite serves them directly.  The app provides
+three pages:
 
 * **Home** – basic information and a link to the login form.
 * **Login** – posts credentials to the backend `/login` endpoint and stores the returned JWT.
