@@ -45,3 +45,15 @@ yarn dev
 ```
 
 Run `yarn build` to create a production bundle under `dist/`.
+
+## Docker Development
+
+The project can be run locally using Docker. Build the images and start the
+containers with:
+
+```bash
+docker-compose up --build
+```
+
+The API will be available at [http://localhost:8080](http://localhost:8080).
+Migrations are executed automatically on startup.
