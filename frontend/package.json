@@ -1,0 +1,14 @@
+{
+  "name": "ebal-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "concurrently \"tsc -w\" \"lite-server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "lite-server": "^2.6.1",
+    "typescript": "^5.4.2"
+  }
+}

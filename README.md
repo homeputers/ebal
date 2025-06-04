@@ -34,4 +34,15 @@ tables as well as the join table for member assignments.
 
 ## Frontend
 
-A lightweight React frontend lives in the `frontend` directory. It uses TypeScript but still relies on CDN scripts for React, React Router and Bootstrap, so there are no npm dependencies. The compiled files under `frontend/dist` are not version controlled, so run `tsc` inside the `frontend` folder to generate them and then open `frontend/index.html`.
+A lightweight React frontend lives in the `frontend` directory.  It is now a tiny
+Node project managed with **yarn**.  Install the dependencies and start the dev
+server with live reload using:
+
+```bash
+cd frontend
+yarn install
+yarn dev
+```
+
+The TypeScript sources are compiled to `dist/` (ignored by git) and served by
+`lite-server`.  Run `yarn build` to generate the files once for production.

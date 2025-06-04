@@ -1,15 +1,19 @@
 # Ebal Frontend
 
-This folder contains a tiny React application written in TypeScript.  It relies on CDN versions of React, React Router and Bootstrap so there are no npm dependencies.
+This folder contains a tiny React application written in TypeScript.  It is now
+a small Node project managed with **yarn** and served using `lite-server` for
+automatic reloads.
 
-Source files live under `src/` and are compiled to plain JavaScript in `dist/` using the TypeScript compiler:
+Install dependencies and start the dev server from this directory:
 
 ```bash
-cd frontend
-tsc
+yarn install
+yarn dev
 ```
 
-Open `index.html` after running `tsc` (or use the precompiled files in `dist`).  The app provides three pages:
+TypeScript sources live under `src/` and compile to `dist/`.  Open `index.html`
+after running `yarn build` or let the dev server compile on the fly.  The app
+provides three pages:
 
 * **Home** – basic information and a link to the login form.
 * **Login** – posts credentials to the backend `/login` endpoint and stores the returned JWT.
