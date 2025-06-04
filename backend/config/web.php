@@ -55,6 +55,28 @@ return [
                         'DELETE {id}/members/<member_id>' => 'remove-member',
                     ],
                 ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => [
+                        'lineup-templates' => 'lineup-template',
+                    ],
+                    'extraPatterns' => [
+                        'POST {id}/groups' => 'add-group',
+                        'PUT {id}/groups/<group_id>' => 'update-group',
+                        'DELETE {id}/groups/<group_id>' => 'remove-group',
+                    ],
+                ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => [
+                        'lineups' => 'lineup',
+                    ],
+                    'extraPatterns' => [
+                        'POST {id}/members' => 'add-member',
+                        'PUT {id}/members/<member_id>' => 'update-member',
+                        'DELETE {id}/members/<member_id>' => 'remove-member',
+                    ],
+                ],
                 'POST login' => 'site/login',
                 'GET public' => 'site/public',
                 'GET dashboard' => 'site/dashboard',
