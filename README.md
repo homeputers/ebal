@@ -15,6 +15,10 @@ people from each group, and service lineups that assign actual members for a
 particular worship service. Templates make it easy to prefill a lineup and then
 swap out members as needed.
 
+This update introduces song management. Song categories organize songs, and each
+song records its original key and author. Song lists tie songs to a worship
+service lineup in a particular order.
+
 API endpoints for these modules are documented in `openapi.yaml`.
 
 ## Database Migrations
