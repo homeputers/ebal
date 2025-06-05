@@ -11,7 +11,7 @@ export default function Dashboard({ token }: DashboardProps) {
 
   useEffect(() => {
     if (!token) return;
-    fetch('/dashboard', { headers: { 'Authorization': 'Bearer ' + token } })
+      fetch('/api/dashboard', { headers: { 'Authorization': 'Bearer ' + token } })
       .then(res => res.json())
       .then(data => {
         setMessage(data.message);

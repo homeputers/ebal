@@ -45,3 +45,16 @@ yarn dev
 ```
 
 Run `yarn build` to create a production bundle under `dist/`.
+
+## Docker Development
+
+The project can be run locally using Docker. Build the images and start the
+containers with:
+
+```bash
+docker-compose up --build
+```
+
+When running with Docker, the React frontend is served at
+[http://localhost:8080](http://localhost:8080) and API requests are available
+under `/api`. Migrations are executed automatically on startup.
