@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
 interface Group {
   id: number;
@@ -9,9 +9,9 @@ interface Group {
 
 export default function Groups({ token }: { token: string }) {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [edit, setEdit] = useState<Group | null>(null);
+  const [form, setForm] = useState<Omit<Group, 'id'>>({ name: '', description: '' });
+  const [editing, setEditing] = useState<number | null>(null);
+  const [error, setError] = useState('');
 
   const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
 
@@ -23,71 +23,61 @@ export default function Groups({ token }: { token: string }) {
 
   useEffect(load, []);
 
-  const create = () => {
-    fetch('/api/groups', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ name, description })
-    }).then(() => { setName(''); setDescription(''); load(); });
+  const submit = async () => {
+    setError('');
+    if (!form.name.trim()) { setError('Name is required'); return; }
+    try {
+      const res = await fetch(editing ? '/api/groups/' + editing : '/api/groups', {
+        method: editing ? 'PUT' : 'POST',
+        headers,
+        body: JSON.stringify(form)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Request failed');
+      }
+      setForm({ name: '', description: '' });
+      setEditing(null);
+      load();
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const update = () => {
-    if (!edit) return;
-    fetch('/api/groups/' + edit.id, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({ name: edit.name, description: edit.description })
-    }).then(() => { setEdit(null); load(); });
-  };
-
-  const remove = (id: number) => {
-    fetch('/api/groups/' + id, { method: 'DELETE', headers }).then(load);
-  };
+  const edit = (g: Group) => { setForm({ name: g.name, description: g.description || '' }); setEditing(g.id); };
+  const cancel = () => { setForm({ name: '', description: '' }); setEditing(null); setError(''); };
+  const remove = async (id: number) => { await fetch('/api/groups/' + id, { method: 'DELETE', headers }); load(); };
 
   if (!token) return <Navigate to="/login" />;
 
   return (
-    <div className="container">
+    <div className="container" style={{ maxWidth: '600px' }}>
+      <Link to="/dashboard" className="btn btn-link p-0 mb-2">&laquo; Back</Link>
       <h2 className="mb-3">Groups</h2>
-      <ul className="list-group mb-3">
+      {error && <div className="alert alert-danger">{error}</div>}
+      <div className="mb-3">
+        <input className="form-control mb-1" placeholder="Name" value={form.name}
+          onChange={e => setForm({ ...form, name: (e.target as HTMLInputElement).value })} />
+        <input className="form-control" placeholder="Description" value={form.description}
+          onChange={e => setForm({ ...form, description: (e.target as HTMLInputElement).value })} />
+        <div className="mt-2">
+          <button className="btn btn-primary" onClick={submit}>{editing ? 'Update' : 'Add'}</button>
+          {editing && <button className="btn btn-secondary ms-2" onClick={cancel}>Cancel</button>}
+        </div>
+      </div>
+      <ul className="list-group">
         {groups.map(g => (
           <li key={g.id} className="list-group-item d-flex justify-content-between">
-            {edit && edit.id === g.id ? (
-              <span className="w-100">
-                <input className="form-control mb-1" value={edit.name}
-                  onChange={e => setEdit({ ...edit, name: (e.target as HTMLInputElement).value })} />
-                <input className="form-control" value={edit.description || ''}
-                  onChange={e => setEdit({ ...edit, description: (e.target as HTMLInputElement).value })} />
-              </span>
-            ) : (
-              <span>
-                <strong>{g.name}</strong> {g.description}
-              </span>
-            )}
             <span>
-              {edit && edit.id === g.id ? (
-                <>
-                  <button className="btn btn-sm btn-primary me-2" onClick={update}>Save</button>
-                  <button className="btn btn-sm btn-secondary" onClick={() => setEdit(null)}>Cancel</button>
-                </>
-              ) : (
-                <>
-                  <button className="btn btn-sm btn-secondary me-2" onClick={() => setEdit(g)}>Edit</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => remove(g.id)}>Delete</button>
-                </>
-              )}
+              <strong>{g.name}</strong> {g.description}
+            </span>
+            <span>
+              <button className="btn btn-sm btn-secondary me-2" onClick={() => edit(g)}>Edit</button>
+              <button className="btn btn-sm btn-danger" onClick={() => remove(g.id)}>Delete</button>
             </span>
           </li>
         ))}
       </ul>
-      <h4>Add Group</h4>
-      <div className="mb-2">
-        <input className="form-control mb-1" placeholder="Name" value={name}
-          onChange={e => setName((e.target as HTMLInputElement).value)} />
-        <input className="form-control" placeholder="Description" value={description}
-          onChange={e => setDescription((e.target as HTMLInputElement).value)} />
-      </div>
-      <button className="btn btn-primary" onClick={create}>Add</button>
     </div>
   );
 }
