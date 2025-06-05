@@ -1,6 +1,5 @@
 <?php
 use yii\db\Migration;
-use Yii;
 
 class m230105_000012_insert_admin_user extends Migration
 {
