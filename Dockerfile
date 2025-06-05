@@ -19,6 +19,7 @@ RUN composer install --no-interaction --prefer-dist
 # Stage 3 - runtime image
 FROM php:8.1-cli
 RUN apt-get update && apt-get install -y default-mysql-client \
+    && docker-php-ext-install pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /var/www/html
 COPY --from=backend /app/backend .
