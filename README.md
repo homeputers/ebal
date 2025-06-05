@@ -31,6 +31,7 @@ Run the following command from the `backend` directory to apply migrations:
 
 This will create the required tables such as the `user`, `member`, and `group`
 tables as well as the join table for member assignments.
+It also seeds a default **admin** user with password **admin123**.
 
 ## Frontend
 
