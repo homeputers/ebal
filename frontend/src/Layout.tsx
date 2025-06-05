@@ -1,4 +1,3 @@
-// Proposed content for /Users/andres/dev/ebal/frontend/src/Layout.tsx
 import { Outlet } from 'react-router-dom';
 
 interface LayoutProps {
