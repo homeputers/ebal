@@ -657,6 +657,30 @@
                 }
             ],
             "time": "2025-02-13T21:21:17+00:00"
+        },
+        {
+            "name": "phpunit/phpunit",
+            "version": "9.6.16",
+            "type": "library",
+            "require": {
+                "php": "^7.3 || ^8.0"
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPUnit\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "The PHP Unit Testing framework.",
+            "homepage": "https://phpunit.de/",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpunit/issues",
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.16"
+            },
+            "time": "2024-01-01T00:00:00+00:00"
         }
     ],
     "aliases": [],
