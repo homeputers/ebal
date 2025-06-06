@@ -24,13 +24,11 @@ jobs:
         with:
           php-version: '8.1'
       - name: Install dependencies
-        run: |
-          cd backend
-          composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
+        working-directory: backend
       - name: Run PHPUnit
-        run: |
-          cd backend
-          vendor/bin/phpunit --configuration phpunit.xml --coverage-clover coverage.xml
+        run: ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover coverage.xml
+        working-directory: backend
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
