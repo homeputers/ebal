@@ -30,7 +30,7 @@ jobs:
         run: pwd && ls -la && cd vendor && pwd && ls -la && cd phpunit && pwd && ls -la && cd phpunit && pwd && ls -la
         working-directory: backend
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --coverage-clover coverage.xml .
+        run: vendor/phpunit/phpunit/phpunit --coverage-clover coverage.xml .
         working-directory: backend
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
