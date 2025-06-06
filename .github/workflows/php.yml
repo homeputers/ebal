@@ -27,7 +27,7 @@ jobs:
         run: composer self-update && composer install && composer dump-autoload
         working-directory: backend
       - name: Output debug info
-        run: pwd && ls -la && cd vendor && pwd && ls -la && cd bin && pwd && ls -la
+        run: pwd && ls -la && cd vendor && pwd && ls -la && cd phpunit && pwd && ls -la
         working-directory: backend
       - name: Run PHPUnit
         run: vendor/bin/phpunit --coverage-clover coverage.xml .
