@@ -27,7 +27,7 @@ jobs:
         run: composer self-update && composer install && composer dump-autoload
         working-directory: backend
       - name: Run PHPUnit
-        run: ./vendor/phpunit --coverage-clover coverage.xml
+        run: ./vendor/bin/phpunit --coverage-clover coverage.xml
         working-directory: backend
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
