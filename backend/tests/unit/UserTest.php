@@ -23,6 +23,12 @@ class UserTest extends TestCase
         $user->role = 'admin';
 
         $token = $user->generateJwt();
+
+        $this->assertMatchesRegularExpression('/^[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+$/',
+            $token,
+            'Generated token is not in the expected JWT format (header.payload.signature). Actual token: ' . $token
+        );
+
         $payload = Yii::$app->jwt->decode($token);
 
         $this->assertSame(42, $payload['id']);

@@ -1,7 +1,8 @@
 <?php
+namespace app\models;
+
 require_once __DIR__ . '/bootstrap.php';
 
-namespace app\models;
 class User {
     public $id;
     public $username;

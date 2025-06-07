@@ -23,4 +23,6 @@ namespace yii {
         public static $app;
     }
 }
-class Yii extends \yii\BaseYii {}
+namespace {
+    class Yii extends \yii\BaseYii {}
+}

@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/bootstrap.php';
-
 namespace tests\unit;
+
+require_once __DIR__ . '/bootstrap.php';
 
 use app\controllers\LineupTemplateController;
 use PHPUnit\Framework\TestCase;
