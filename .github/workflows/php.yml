@@ -1,0 +1,36 @@
+name: PHP Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.php'
+      - '.github/workflows/php.yml'
+      - 'backend/**'
+  pull_request:
+    paths:
+      - '**.php'
+      - '.github/workflows/php.yml'
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Install dependencies
+        run: composer self-update && composer install && composer dump-autoload
+        working-directory: backend
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit --coverage-clover coverage.xml
+        working-directory: backend
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: homeputers/ebal

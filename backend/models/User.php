@@ -42,7 +42,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $payload = [
             'id' => $this->id,
-            'role' => $this->role,
+            'role' => $this->role, 
         ];
         return Yii::$app->jwt->encode($payload);
     }

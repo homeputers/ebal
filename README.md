@@ -59,3 +59,15 @@ docker-compose up --build
 When running with Docker, the React frontend is served at
 [http://localhost:8080](http://localhost:8080) and API requests are available
 under `/api`. Migrations are executed automatically on startup.
+
+## Running Backend Tests
+
+PHPUnit tests live in the `backend` folder. Change into that directory before
+executing the test suite so the Composer autoloader can be found.
+
+```bash
+cd backend
+composer install
+vendor/bin/phpunit --configuration phpunit.xml \
+    --coverage-clover coverage.xml
+```
