@@ -49,7 +49,7 @@ Run `yarn build` to create a production bundle under `dist/`.
 
 ## Docker Development
 
-The project can be run locally using Docker. Build the images and start the
+The project can be run locally using Docker with a multi-stage build process. Build the images and start the
 containers with:
 
 ```bash
@@ -59,6 +59,30 @@ docker-compose up --build
 When running with Docker, the React frontend is served at
 [http://localhost:8080](http://localhost:8080) and API requests are available
 under `/api`. Migrations are executed automatically on startup.
+
+The Docker setup includes:
+- A multi-stage build process that compiles the React frontend and PHP backend
+- An Nginx service that serves static files and proxies API requests
+- A MariaDB database with persistent storage
+- Automatic database migrations on container startup
+- Resource limits for each container to optimize performance
+
+## Deployment
+
+The application can be deployed to an external server using GitHub Actions. The deployment workflow:
+
+1. Connects to the target server via SSH
+2. Pulls the latest code from the main branch
+3. Rebuilds and starts the Docker containers
+
+To configure deployment:
+1. Add the following secrets to your GitHub repository:
+   - `SSH_PRIVATE_KEY`: SSH key for connecting to the server
+   - `SSH_USER`: Username for SSH connection
+   - `SSH_HOST`: Hostname or IP address of the server
+   - `APP_DIRECTORY`: Directory path where the application is located on the server
+
+2. Trigger the deployment manually from the GitHub Actions tab.
 
 ## Running Backend Tests
 
