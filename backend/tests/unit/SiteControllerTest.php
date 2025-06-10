@@ -1,16 +1,19 @@
 <?php
-namespace app\models;
+namespace tests\unit;
 
 require_once __DIR__ . '/bootstrap.php';
 
-class User {
+// Define the mock user class within the tests\unit namespace
+// Renamed to avoid any potential collision and to be clear it's a mock.
+class MockUserForSiteTest {
     public $id;
     public $username;
     public $password_hash;
     public $role = 'user';
     public static $stored;
+
     public static function findOne($cond) {
-        if (isset($cond['username']) && self::$stored && self::$stored->username === $cond['username']) {
+        if (isset($cond['username']) && isset(self::$stored) && self::$stored->username === $cond['username']) {
             return self::$stored;
         }
         return null;
@@ -18,16 +21,22 @@ class User {
     public function generateJwt() { return 'jwt-' . $this->id; }
 }
 
-namespace tests\unit;
 
 use app\controllers\SiteController;
 use PHPUnit\Framework\TestCase;
 use Yii;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class SiteControllerTest extends TestCase
 {
     protected function setUp(): void
     {
+        // Alias app\models\User to our mock for this test process
+        class_alias('tests\unit\MockUserForSiteTest', 'app\models\User');
+
         \Yii::$app = (object)[
             'request' => (object)['bodyParams' => []],
             'response' => (object)['statusCode' => null],
@@ -52,11 +61,11 @@ class SiteControllerTest extends TestCase
 
     public function testLoginSuccess(): void
     {
-        $user = new \app\models\User();
+        $user = new MockUserForSiteTest();
         $user->id = 1;
         $user->username = 'john';
         $user->password_hash = 'hashed';
-        \app\models\User::$stored = $user;
+        MockUserForSiteTest::$stored = $user;
         \Yii::$app->request->bodyParams = ['username' => 'john', 'password' => 'secret'];
 
         $controller = new SiteController('site', null);
@@ -68,7 +77,7 @@ class SiteControllerTest extends TestCase
 
     public function testLoginFailure(): void
     {
-        \app\models\User::$stored = null;
+        MockUserForSiteTest::$stored = null;
         \Yii::$app->request->bodyParams = ['username' => 'john', 'password' => 'wrong'];
 
         $controller = new SiteController('site', null);
