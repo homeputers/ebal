@@ -1,12 +1,12 @@
 # .github/workflows/deploy.yml
-name: Deploy to Vultr
+name: Deploy to External Server
 
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 
 jobs:
   deploy:
-    name: Build & Deploy to Vultr
+    name: Build & Deploy to External Server
     runs-on: ubuntu-latest
 
     steps:
