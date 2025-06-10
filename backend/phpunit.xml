@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit bootstrap="vendor/autoload.php"
+         colors="true"
+         processIsolation="false"
+         stopOnFailure="false">
     <testsuites>
         <testsuite name="backend">
             <directory>tests/unit</directory>
         </testsuite>
     </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./models</directory>
+            <directory suffix=".php">./controllers</directory>
+            <directory suffix=".php">./components</directory>
+            <directory suffix=".php">./mail</directory>
+            <!-- Add any other source code directories here -->
+        </include>
+        <exclude>
+            <directory suffix=".php">./vendor</directory>
+            <directory suffix=".php">./tests</directory>
+            <directory suffix=".php">./runtime</directory>
+            <directory suffix=".php">./web</directory>
+            <directory suffix=".php">./config</directory>
+        </exclude>
+    </coverage>
 </phpunit>
