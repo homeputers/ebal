@@ -35,3 +35,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: homeputers/ebal
+          files: ./backend/coverage.xml
