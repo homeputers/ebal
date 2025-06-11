@@ -4,25 +4,10 @@ namespace tests\unit {
 }
 
 namespace app\models {
-    class MemberGroup {
-        public static array $deleted = [];
-        public static array $saved = [];
-        public int $member_id;
-        public int $group_id;
-        public function __construct(array $config = []) {
-            $this->member_id = $config['member_id'] ?? 0;
-            $this->group_id = $config['group_id'] ?? 0;
-        }
-        public static function deleteAll($condition) {
-            self::$deleted[] = $condition;
-        }
-        public function save() {
-            self::$saved[] = ['member_id' => $this->member_id, 'group_id' => $this->group_id];
-            return true;
-        }
-    }
-    class Group {
+    /** Simple stub used by the unit test to mimic a group model */
+    class DummyGroup {
         public int $id;
+
         public function __construct(int $id) { $this->id = $id; }
     }
 }
@@ -72,7 +57,7 @@ namespace tests\unit {
         public function testAfterFindPopulatesGroupIds(): void
         {
             $member = new Member();
-            $member->populateRelation('groups', [new \app\models\Group(1), new \app\models\Group(2)]);
+            $member->populateRelation('groups', [new \app\models\DummyGroup(1), new \app\models\DummyGroup(2)]);
             $member->afterFind();
             $this->assertSame([1,2], $member->group_ids);
         }
