@@ -79,6 +79,7 @@ return [
                         'lineup-templates' => 'lineup-template',
                     ],
                     'extraPatterns' => [
+                        'GET {id}/groups' => 'groups',
                         'POST {id}/groups' => 'add-group',
                         'PUT {id}/groups/<group_id>' => 'update-group',
                         'DELETE {id}/groups/<group_id>' => 'remove-group',

@@ -35,6 +35,18 @@ class LineupTemplateController extends ActiveController
         return $behaviors;
     }
 
+    public function actionGroups($id)
+    {
+        if (!LineupTemplate::findOne($id)) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Not found'];
+        }
+        return LineupTemplateGroup::find()
+            ->where(['template_id' => $id])
+            ->with('group')
+            ->all();
+    }
+
     public function actionAddGroup($id)
     {
         $groupId = Yii::$app->request->bodyParams['group_id'] ?? null;

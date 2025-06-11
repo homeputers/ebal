@@ -245,6 +245,30 @@ paths:
         '204':
           description: Deleted
   /lineup-templates/{id}/groups:
+    get:
+      summary: List groups on template
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    group_id:
+                      type: integer
+                    count:
+                      type: integer
+                    group:
+                      $ref: '#/components/schemas/Group'
     post:
       summary: Add group to template
       parameters:
