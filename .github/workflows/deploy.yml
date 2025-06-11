@@ -29,18 +29,21 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to server
-        env: # Make the TAG input available to the script
-          DEPLOY_TAG: ${{ github.event.inputs.TAG }}
+        env:
+          # Make secrets and the input TAG available to the script block
+          # These will be expanded by the runner's shell within the heredoc
+          REMOTE_APP_DIR: ${{ secrets.APP_DIRECTORY }}
+          REMOTE_PROD_SERVER_NAME: ${{ secrets.PROD_SERVER_NAME }}
+          EFFECTIVE_DEPLOY_TAG: ${{ github.event.inputs.TAG }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "DEPLOY_TAG=$DEPLOY_TAG" << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
             set -e
             set -x # Enable command tracing
 
-            echo "Navigating to application directory: ${{ secrets.APP_DIRECTORY }}"
-            cd ${{ secrets.APP_DIRECTORY }}
-            echo "- Changed directory to $(pwd)"
+            # Use the variables expanded by the GitHub Actions runner
+            cd "$REMOTE_APP_DIR" # Use quotes for safety
 
-            if [ -z "$DEPLOY_TAG" ]; then
+            if [ -z "$EFFECTIVE_DEPLOY_TAG" ]; then
               echo "No tag specified, deploying from main branch."
               echo "Checking out main branch..."
               git checkout main
@@ -49,12 +52,12 @@ jobs:
               git pull origin main
               echo "- Git pull completed."
             else
-              echo "Deploying from tag: $DEPLOY_TAG"
-              echo "Fetching tags and checking out $DEPLOY_TAG..."
+              echo "Deploying from tag: $EFFECTIVE_DEPLOY_TAG"
+              echo "Fetching tags and checking out $EFFECTIVE_DEPLOY_TAG..."
               git fetch --tags
-              git checkout $DEPLOY_TAG
-              echo "- Checked out tag $DEPLOY_TAG"
-
+              git checkout "$EFFECTIVE_DEPLOY_TAG" # Use quotes for safety
+              echo "- Checked out tag $EFFECTIVE_DEPLOY_TAG"
+            fi
             echo "Taking Docker services down..."
             docker compose down
             echo "- Docker services down."
@@ -64,7 +67,8 @@ jobs:
             echo "- Docker build completed."
 
             echo "Bringing Docker services up (detached)..."
-            ENV_SERVER_NAME="${{ secrets.PROD_SERVER_NAME }}" docker compose up -d
+            # Use the expanded variable for ENV_SERVER_NAME
+            ENV_SERVER_NAME="$REMOTE_PROD_SERVER_NAME" docker compose up -d
             echo "- Docker services up."
 
             echo "Deployment script finished successfully."
