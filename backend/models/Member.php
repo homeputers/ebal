@@ -45,7 +45,7 @@ class Member extends ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->group_ids !== null) {
+        if (!empty($this->group_ids)) {
             MemberGroup::deleteAll(['member_id' => $this->id]);
             foreach ($this->group_ids as $gid) {
                 $mg = new MemberGroup(['member_id' => $this->id, 'group_id' => $gid]);
