@@ -6,11 +6,18 @@ interface Member {
   name: string;
   email?: string;
   phone?: string;
+  group_ids?: number[];
+}
+
+interface Group {
+  id: number;
+  name: string;
 }
 
 export default function Members({ token }: { token: string }) {
   const [members, setMembers] = useState<Member[]>([]);
-  const [form, setForm] = useState<Omit<Member, 'id'>>({ name: '', email: '', phone: '' });
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [form, setForm] = useState<Omit<Member, 'id'> & { group_ids: number[] }>({ name: '', email: '', phone: '', group_ids: [] });
   const [editing, setEditing] = useState<number | null>(null);
   const [error, setError] = useState('');
   const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
@@ -19,9 +26,12 @@ export default function Members({ token }: { token: string }) {
     fetch('/api/members', { headers })
       .then(res => res.json())
       .then(setMembers);
+    fetch('/api/groups', { headers })
+      .then(res => res.json())
+      .then(setGroups);
   };
 
-  useEffect(load, []);
+  useEffect(load, [token, headers]);
 
   const submit = async () => {
     setError("");
@@ -36,7 +46,7 @@ export default function Members({ token }: { token: string }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message || "Request failed");
       }
-      setForm({ name: "", email: "", phone: "" });
+      setForm({ name: "", email: "", phone: "", group_ids: [] });
       setEditing(null);
       load();
     } catch (err) {
@@ -44,9 +54,30 @@ export default function Members({ token }: { token: string }) {
     }
   };
 
-  const edit = (m: Member) => { setForm({ name: m.name, email: m.email || "", phone: m.phone || "" }); setEditing(m.id); };
-  const cancel = () => { setEditing(null); setForm({ name: "", email: "", phone: "" }); setError(""); };
+  const edit = (m: Member) => {
+    setForm({
+      name: m.name,
+      email: m.email || '',
+      phone: m.phone || '',
+      group_ids: m.group_ids || []
+    });
+    setEditing(m.id);
+  };
+  const cancel = () => {
+    setEditing(null);
+    setForm({ name: '', email: '', phone: '', group_ids: [] });
+    setError('');
+  };
   const remove = async (id: number) => { await fetch(`/api/members/${id}`, { method: "DELETE", headers }); load(); };
+
+  const toggleGroup = (id: number) => {
+    setForm(f => ({
+      ...f,
+      group_ids: f.group_ids.includes(id)
+        ? f.group_ids.filter(g => g !== id)
+        : [...f.group_ids, id]
+    }));
+  };
   if (!token) return <Navigate to="/login" />;
 
   return (
@@ -61,6 +92,14 @@ export default function Members({ token }: { token: string }) {
           onChange={e => setForm({ ...form, email: (e.target as HTMLInputElement).value })} />
         <input className="form-control" placeholder="Phone" value={form.phone}
           onChange={e => setForm({ ...form, phone: (e.target as HTMLInputElement).value })} />
+        {groups.map(g => (
+          <div className="form-check" key={g.id}>
+            <input className="form-check-input" type="checkbox" id={'g'+g.id}
+              checked={form.group_ids.includes(g.id)}
+              onChange={() => toggleGroup(g.id)} />
+            <label className="form-check-label" htmlFor={'g'+g.id}>{g.name}</label>
+          </div>
+        ))}
         <div className="mt-2">
           <button className="btn btn-primary" onClick={submit}>{editing ? 'Update' : 'Add'}</button>
           {editing && <button className="btn btn-secondary ms-2" onClick={cancel}>Cancel</button>}
