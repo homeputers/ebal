@@ -18,13 +18,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to server
+      - name: Deploy to server (Debug SSH)
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-            cd ${{ secrets.APP_DIRECTORY }}
-            git pull origin main
-            docker compose down
-            docker compose build --no-cache
-            docker compose up -d
-          EOF'
+          echo "Attempting SSH connection..."
+          ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'echo "SSH connection test successful"; exit 0'
+          echo "SSH command finished."
