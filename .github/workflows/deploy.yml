@@ -32,7 +32,7 @@ jobs:
         env: # Make the TAG input available to the script
           DEPLOY_TAG: ${{ github.event.inputs.TAG }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "DEPLOY_TAG=$DEPLOY_TAG" << 'EOF'
             set -e
             set -x # Enable command tracing
 
