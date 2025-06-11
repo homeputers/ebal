@@ -26,14 +26,15 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:alpine
+    build: ./docker/nginx
     ports:
       - "8080:80"
     volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - web-data:/usr/share/nginx/html:ro
     depends_on:
       - app
+    environment:
+      - ENV_SERVER_NAME=${ENV_SERVER_NAME}
     mem_limit: 50m
     restart: unless-stopped
 

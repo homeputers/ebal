@@ -2,7 +2,12 @@
 name: Deploy to External Server
 
 on:
-  workflow_dispatch:  # Manual trigger via GitHub UI
+  workflow_dispatch: # Manual trigger via GitHub UI
+    inputs:
+      TAG:
+        description: 'Git tag to deploy (e.g., v1.0.0). Leave empty to deploy from main branch.'
+        required: false
+        default: ''
 
 jobs:
   deploy:
@@ -12,6 +17,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # If a tag is provided, check out that tag. Otherwise, checkout the default branch (main).
+          # Fetch all tags to ensure the specified tag is available.
+          ref: ${{ github.event.inputs.TAG || 'main' }}
+          fetch-depth: 0 # Fetch all history for all tags and branches
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
@@ -19,12 +29,48 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to server
+        env:
+          # Make secrets and the input TAG available to the script block
+          # These will be expanded by the runner's shell within the heredoc
+          REMOTE_APP_DIR: ${{ secrets.APP_DIRECTORY }}
+          REMOTE_PROD_SERVER_NAME: ${{ secrets.PROD_SERVER_NAME }}
+          EFFECTIVE_DEPLOY_TAG: ${{ github.event.inputs.TAG }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
             set -e
-            cd "${{ secrets.APP_DIRECTORY }}"
-            git pull origin 
+            set -x # Enable command tracing
+
+            # Use the variables expanded by the GitHub Actions runner
+            cd "$REMOTE_APP_DIR" # Use quotes for safety
+
+            if [ -z "$EFFECTIVE_DEPLOY_TAG" ]; then
+              echo "No tag specified, deploying from main branch."
+              echo "Checking out main branch..."
+              git checkout main
+              echo "- Checked out main branch."
+              echo "Pulling latest changes from origin main..."
+              git pull origin main
+              echo "- Git pull completed."
+            else
+              echo "Deploying from tag: $EFFECTIVE_DEPLOY_TAG"
+              echo "Fetching tags and checking out $EFFECTIVE_DEPLOY_TAG..."
+              git fetch --tags
+              git checkout "$EFFECTIVE_DEPLOY_TAG" # Use quotes for safety
+              echo "- Checked out tag $EFFECTIVE_DEPLOY_TAG"
+            fi
+            echo "Taking Docker services down..."
             docker compose down
+            echo "- Docker services down."
+
+            echo "Building Docker services (no-cache)..."
             docker compose build --no-cache
-            docker compose up -d
+            echo "- Docker build completed."
+
+            echo "Bringing Docker services up (detached)..."
+            # Use the expanded variable for ENV_SERVER_NAME
+            ENV_SERVER_NAME="$REMOTE_PROD_SERVER_NAME" docker compose up -d
+            echo "- Docker services up."
+
+            echo "Deployment script finished successfully."
+            set +x # Disable command tracing
           EOF
