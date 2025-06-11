@@ -11,14 +11,19 @@ services:
       - web-data:/var/www/html/web
     depends_on:
       - db
+    mem_limit: 200m
+    restart: unless-stopped
 
   db:
-    image: mysql:8.0
+    image: mariadb:10.6
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: app
     volumes:
       - db-data:/var/lib/mysql
+    command: --max_connections=20 --innodb_buffer_pool_size=32M
+    mem_limit: 256m
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
@@ -29,6 +34,8 @@ services:
       - web-data:/usr/share/nginx/html:ro
     depends_on:
       - app
+    mem_limit: 50m
+    restart: unless-stopped
 
 volumes:
   db-data:
