@@ -22,9 +22,33 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
+            set -x # Enable command tracing
+
+            echo "DEBUG: Starting deployment script execution."
+            echo "DEBUG: Current directory (before cd):"
+            pwd
+
+            echo "DEBUG: Changing to application directory: ${{ secrets.APP_DIRECTORY }}"
             cd "${{ secrets.APP_DIRECTORY }}"
-            git pull origin 
+            echo "DEBUG: Current directory (after cd):"
+            pwd
+
+            echo "DEBUG: Pulling latest code from origin..."
+            git pull origin
+            echo "DEBUG: Git pull completed."
+
+            echo "DEBUG: Taking Docker services down..."
             docker compose down
+            echo "DEBUG: Docker services down."
+
+            echo "DEBUG: Building Docker services (no-cache)..."
             docker compose build --no-cache
+            echo "DEBUG: Docker build completed."
+
+            echo "DEBUG: Bringing Docker services up (detached)..."
             docker compose up -d
+            echo "DEBUG: Docker services up."
+
+            echo "DEBUG: Deployment script finished successfully."
+            set +x # Disable command tracing
           EOF
