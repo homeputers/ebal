@@ -49,7 +49,10 @@ class Member extends ActiveRecord
             MemberGroup::deleteAll(['member_id' => $this->id]);
             foreach ($this->group_ids as $gid) {
                 $mg = new MemberGroup(['member_id' => $this->id, 'group_id' => $gid]);
-                $mg->save();
+                if (!$mg->save()) {
+                    // Log error or handle the failure
+                    Yii::error('Failed to save member group: ' . json_encode($mg->errors));
+                }
             }
         }
     }
