@@ -12,3 +12,5 @@
 
 # Ignore test coverage report
 /backend/coverage.xml
+
+.env
