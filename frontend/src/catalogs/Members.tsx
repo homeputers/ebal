@@ -31,7 +31,7 @@ export default function Members({ token }: { token: string }) {
       .then(setGroups);
   };
 
-  useEffect(load, []);
+  useEffect(load, [token, headers]);
 
   const submit = async () => {
     setError("");
