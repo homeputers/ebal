@@ -66,6 +66,10 @@ The Docker setup includes:
 - A MariaDB database with persistent storage
 - Automatic database migrations on container startup
 - Resource limits for each container to optimize performance
+- Configurable server name for Nginx, allowing you to serve the application under a custom domain (e.g., `ebal.yourdomain.com`).
+  - To set this locally, create a `.env` file in the project root (you can copy `.env.sample` to `.env` and modify it) with the line `ENV_SERVER_NAME=your.desired.domain` (e.g., `ENV_SERVER_NAME=ebal.localhost`).
+  - Your `docker-compose.yml` is already set up to use this variable.
+  - Remember to update your local `/etc/hosts` file to point your chosen domain to `127.0.0.1` for local testing.
 
 ## Deployment
 
@@ -81,6 +85,7 @@ To configure deployment:
    - `SSH_USER`: Username for SSH connection
    - `SSH_HOST`: Hostname or IP address of the server
    - `APP_DIRECTORY`: Directory path where the application is located on the server
+   - `PROD_SERVER_NAME`: The production domain/subdomain where the application will be served (e.g., `ebal.yourdomain.com`). This is used by Nginx to correctly route requests.
 
 2. Trigger the deployment manually from the GitHub Actions tab.
 

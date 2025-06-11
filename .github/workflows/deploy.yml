@@ -24,31 +24,27 @@ jobs:
             set -e
             set -x # Enable command tracing
 
-            echo "DEBUG: Starting deployment script execution."
-            echo "DEBUG: Current directory (before cd):"
-            pwd
-
-            echo "DEBUG: Changing to application directory: ${{ secrets.APP_DIRECTORY }}"
+            echo "Starting deployment script execution."
             cd "${{ secrets.APP_DIRECTORY }}"
-            echo "DEBUG: Current directory (after cd):"
-            pwd
+            echo "Pulling latest code from origin..."
+            git stash
+            git stash clear
+            git checkout main
+            git pull origin main
+            echo "- Git pull completed."
 
-            echo "DEBUG: Pulling latest code from origin..."
-            git pull origin
-            echo "DEBUG: Git pull completed."
-
-            echo "DEBUG: Taking Docker services down..."
+            echo "Taking Docker services down..."
             docker compose down
-            echo "DEBUG: Docker services down."
+            echo "- Docker services down."
 
-            echo "DEBUG: Building Docker services (no-cache)..."
+            echo "Building Docker services (no-cache)..."
             docker compose build --no-cache
-            echo "DEBUG: Docker build completed."
+            echo "- Docker build completed."
 
-            echo "DEBUG: Bringing Docker services up (detached)..."
-            docker compose up -d
-            echo "DEBUG: Docker services up."
+            echo "Bringing Docker services up (detached)..."
+            ENV_SERVER_NAME="${{ secrets.PROD_SERVER_NAME }}" docker compose up -d
+            echo "- Docker services up."
 
-            echo "DEBUG: Deployment script finished successfully."
+            echo "Deployment script finished successfully."
             set +x # Disable command tracing
           EOF
