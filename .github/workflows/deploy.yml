@@ -50,10 +50,10 @@ jobs:
               echo "- Git pull completed."
             else
               echo "Deploying from tag: $DEPLOY_TAG"
-              # The 'actions/checkout' step has already checked out the tag.
-              # We can optionally verify it here if needed.
-              echo "Current commit is at tag $DEPLOY_TAG."
-            fi
+              echo "Fetching tags and checking out $DEPLOY_TAG..."
+              git fetch --tags
+              git checkout $DEPLOY_TAG
+              echo "- Checked out tag $DEPLOY_TAG"
 
             echo "Taking Docker services down..."
             docker compose down
