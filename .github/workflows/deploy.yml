@@ -22,9 +22,9 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
-            cd ${{ secrets.APP_DIRECTORY }}
+            cd "${{ secrets.APP_DIRECTORY }}"
             git pull origin 
             docker compose down
             docker compose build --no-cache
             docker compose up -d
-          EOF'
+          EOF
