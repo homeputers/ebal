@@ -736,6 +736,10 @@ components:
           type: string
         phone:
           type: string
+        group_ids:
+          type: array
+          items:
+            type: integer
     Group:
       type: object
       properties:
