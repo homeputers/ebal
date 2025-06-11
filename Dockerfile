@@ -9,7 +9,8 @@ RUN yarn build
 # Stage 2: Backend - install PHP/Yii dependencies
 FROM php:8.1-cli-alpine AS backend
 WORKDIR /app/backend
-RUN apk add --no-cache git unzip curl mysql-client
+RUN apk add --no-cache mysql-client \
+    && docker-php-ext-install pdo_mysql
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 COPY backend/ .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
