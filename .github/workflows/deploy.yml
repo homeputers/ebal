@@ -2,7 +2,12 @@
 name: Deploy to External Server
 
 on:
-  workflow_dispatch:  # Manual trigger via GitHub UI
+  workflow_dispatch: # Manual trigger via GitHub UI
+    inputs:
+      TAG:
+        description: 'Git tag to deploy (e.g., v1.0.0). Leave empty to deploy from main branch.'
+        required: false
+        default: ''
 
 jobs:
   deploy:
@@ -12,6 +17,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # If a tag is provided, check out that tag. Otherwise, checkout the default branch (main).
+          # Fetch all tags to ensure the specified tag is available.
+          ref: ${{ github.event.inputs.TAG || 'main' }}
+          fetch-depth: 0 # Fetch all history for all tags and branches
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
@@ -19,19 +29,31 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to server
+        env: # Make the TAG input available to the script
+          DEPLOY_TAG: ${{ github.event.inputs.TAG }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             set -x # Enable command tracing
 
-            echo "Starting deployment script execution."
-            cd "${{ secrets.APP_DIRECTORY }}"
-            echo "Pulling latest code from origin..."
-            git stash
-            git stash clear
-            git checkout main
-            git pull origin main
-            echo "- Git pull completed."
+            echo "Navigating to application directory: ${{ secrets.APP_DIRECTORY }}"
+            cd ${{ secrets.APP_DIRECTORY }}
+            echo "- Changed directory to $(pwd)"
+
+            if [ -z "$DEPLOY_TAG" ]; then
+              echo "No tag specified, deploying from main branch."
+              echo "Checking out main branch..."
+              git checkout main
+              echo "- Checked out main branch."
+              echo "Pulling latest changes from origin main..."
+              git pull origin main
+              echo "- Git pull completed."
+            else
+              echo "Deploying from tag: $DEPLOY_TAG"
+              # The 'actions/checkout' step has already checked out the tag.
+              # We can optionally verify it here if needed.
+              echo "Current commit is at tag $DEPLOY_TAG."
+            fi
 
             echo "Taking Docker services down..."
             docker compose down
