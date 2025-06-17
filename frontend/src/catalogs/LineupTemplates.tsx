@@ -64,6 +64,7 @@ export default function LineupTemplates({ token }: { token: string }) {
           <li key={t.id} className="list-group-item d-flex justify-content-between">
             <span>{t.name}</span>
             <span>
+              <Link to={`/lineup-templates/${t.id}/groups`} className="btn btn-sm btn-outline-primary me-2">{t('Groups')}</Link>
               <button className="btn btn-sm btn-secondary me-2" onClick={() => edit(t)}>{t('Edit')}</button>
               <button className="btn btn-sm btn-danger" onClick={() => remove(t.id)}>{t('Delete')}</button>
             </span>
