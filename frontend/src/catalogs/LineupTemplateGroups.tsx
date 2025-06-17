@@ -17,9 +17,40 @@ export default function LineupTemplateGroups({ token }: { token: string }) {
 
   const load = () => {
     if (!id) return;
-    fetch('/api/lineup-templates/' + id, { headers }).then(res => res.json()).then(setTemplate);
-    fetch('/api/groups', { headers }).then(res => res.json()).then(setGroups);
-    fetch(`/api/lineup-templates/${id}/groups`, { headers }).then(res => res.json()).then(setTemplateGroups);
+    setError(''); // Clear previous errors
+
+    fetch('/api/lineup-templates/' + id, { headers })
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || `Failed to load template details (status: ${res.status})`);
+        }
+        return res.json();
+      })
+      .then(setTemplate)
+      .catch(err => setError(err.message));
+
+    fetch('/api/groups', { headers })
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || `Failed to load groups (status: ${res.status})`);
+        }
+        return res.json();
+      })
+      .then(setGroups)
+      .catch(err => setError(err.message));
+
+    fetch(`/api/lineup-templates/${id}/groups`, { headers })
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || `Failed to load template groups (status: ${res.status})`);
+        }
+        return res.json();
+      })
+      .then(setTemplateGroups)
+      .catch(err => setError(err.message));
   };
   useEffect(load, [id, headers]);
 
