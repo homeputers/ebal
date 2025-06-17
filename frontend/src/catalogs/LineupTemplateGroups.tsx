@@ -21,7 +21,7 @@ export default function LineupTemplateGroups({ token }: { token: string }) {
     fetch('/api/groups', { headers }).then(res => res.json()).then(setGroups);
     fetch(`/api/lineup-templates/${id}/groups`, { headers }).then(res => res.json()).then(setTemplateGroups);
   };
-  useEffect(load, [id]);
+  useEffect(load, [id, headers]);
 
   const submit = async () => {
     setError('');
