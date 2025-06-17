@@ -80,11 +80,19 @@ const I18nContext = createContext<I18nContextProps>({ lang: 'en', setLang: () =>
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
-    const stored = localStorage.getItem('lang');
-    return stored === 'es' ? 'es' : 'en';
+    try {
+      const stored = localStorage.getItem('lang');
+      return stored === 'es' ? 'es' : 'en';
+    } catch (e) {
+      return 'en';
+    }
   });
   const setLang = (l: Lang) => {
-    localStorage.setItem('lang', l);
+    try {
+      localStorage.setItem('lang', l);
+    } catch (e) {
+      // Handle localStorage errors silently
+    }
     setLangState(l);
   };
   return (

@@ -36,7 +36,7 @@ export default function Groups({ token }: { token: string }) {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || t('Request failed'));
+throw new Error(t(data.message) || t('Request failed'));
       }
       setForm({ name: '', description: '' });
       setEditing(null);
@@ -56,7 +56,7 @@ export default function Groups({ token }: { token: string }) {
     <div className="container" style={{ maxWidth: '600px' }}>
       <Link to="/dashboard" className="btn btn-link p-0 mb-2">&laquo; {t('Back')}</Link>
       <h2 className="mb-3">{t('Groups')}</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
+{error && <div className="alert alert-danger">{t(error)}</div>}
       <div className="mb-3">
         <input className="form-control mb-1" placeholder={t('Name')} value={form.name}
           onChange={e => setForm({ ...form, name: (e.target as HTMLInputElement).value })} />
