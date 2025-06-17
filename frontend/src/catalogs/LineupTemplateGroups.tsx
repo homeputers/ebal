@@ -48,7 +48,12 @@ export default function LineupTemplateGroups({ token }: { token: string }) {
 
   const edit = (tg: TemplateGroup) => { setForm({ group_id: tg.group_id, count: tg.count }); setEditing(tg.group_id); };
   const cancel = () => { setEditing(null); setForm({ group_id: 0, count: 1 }); setError(''); };
-  const remove = async (group_id: number) => { await fetch(`/api/lineup-templates/${id}/groups/${group_id}`, { method: 'DELETE', headers }); load(); };
+  const remove = async (group_id: number) => { 
+    if (window.confirm('Are you sure you want to delete this group?')) {
+      await fetch(`/api/lineup-templates/${id}/groups/${group_id}`, { method: 'DELETE', headers }); 
+      load(); 
+    }
+  };
 
   if (!token) return <Navigate to="/login" />;
 
