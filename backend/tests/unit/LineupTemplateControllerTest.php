@@ -29,6 +29,10 @@ use app\controllers\LineupTemplateController;
 use PHPUnit\Framework\TestCase;
 use yii\web\BadRequestHttpException;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class LineupTemplateControllerTest extends TestCase
 {
     protected function setUp(): void
