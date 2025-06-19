@@ -50,3 +50,54 @@ jobs:
       - name: Type check
         run: yarn run check
         working-directory: frontend
+  deploy:
+    name: Deploy to External Server
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        env:
+          REMOTE_APP_DIR: ${{ secrets.APP_DIRECTORY }}
+          REMOTE_PROD_SERVER_NAME: ${{ secrets.PROD_SERVER_NAME }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "REMOTE_APP_DIR='$REMOTE_APP_DIR' REMOTE_PROD_SERVER_NAME='$REMOTE_PROD_SERVER_NAME' bash -s" <<'DEPLOY'
+            set -e
+            set -x # Enable command tracing
+
+            cd "$REMOTE_APP_DIR"
+
+            echo "Checking out main branch..."
+            git checkout main
+            echo "- Checked out main branch."
+            echo "Pulling latest changes from origin main..."
+            git pull origin main
+            echo "- Git pull completed."
+
+            echo "Taking Docker services down..."
+            docker compose down
+            echo "- Docker services down."
+
+            echo "Building Docker services (no-cache)..."
+            docker compose build --no-cache
+            echo "- Docker build completed."
+
+            echo "Bringing Docker services up (detached)..."
+            ENV_SERVER_NAME="$REMOTE_PROD_SERVER_NAME" docker compose up -d
+            echo "- Docker services up."
+
+            echo "Deployment script finished successfully."
+            set +x # Disable command tracing
+          DEPLOY
