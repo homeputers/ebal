@@ -20,6 +20,7 @@ services:
       MYSQL_DATABASE: app
       MYSQL_USER: app
       MYSQL_PASSWORD: prodpass
+      MARIADB_AUTO_UPGRADE: '1'
     volumes:
       - db-data:/var/lib/mysql
     command: --max_connections=200 --innodb_buffer_pool_size=1G

@@ -16,6 +16,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: app
+      MARIADB_AUTO_UPGRADE: '1'
     volumes:
       - db-data:/var/lib/mysql
     command: --max_connections=20 --innodb_buffer_pool_size=32M

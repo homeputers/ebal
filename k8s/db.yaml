@@ -35,6 +35,8 @@ spec:
               value: app
             - name: MYSQL_PASSWORD
               value: prodpass
+            - name: MARIADB_AUTO_UPGRADE
+              value: '1'
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: db-data

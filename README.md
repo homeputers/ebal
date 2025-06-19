@@ -68,6 +68,10 @@ the backend sees clean URLs like `/members`.
 The Vite dev server binds to all interfaces so that Nginx can reach it within
 the Docker network.
 
+The MariaDB container is configured with `MARIADB_AUTO_UPGRADE=1` so it can
+start even if an older MySQL data directory already exists. If startup keeps
+failing, remove the `db-data` volume to initialize a fresh database.
+
 The Docker setup includes:
 - A multi-stage build process that compiles the React frontend and PHP backend
 - An Nginx service that serves static files and proxies API requests
