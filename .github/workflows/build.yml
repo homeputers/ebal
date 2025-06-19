@@ -73,7 +73,7 @@ jobs:
           REMOTE_APP_DIR: ${{ secrets.APP_DIRECTORY }}
           REMOTE_PROD_SERVER_NAME: ${{ secrets.PROD_SERVER_NAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'DEPLOY'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "REMOTE_APP_DIR='$REMOTE_APP_DIR' REMOTE_PROD_SERVER_NAME='$REMOTE_PROD_SERVER_NAME' bash -s" <<'DEPLOY'
             set -e
             set -x # Enable command tracing
 
