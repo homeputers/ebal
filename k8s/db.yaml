@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ebal-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebal-db
+spec:
+  selector:
+    matchLabels:
+      app: ebal-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ebal-db
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.6
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: prodpass
+            - name: MYSQL_DATABASE
+              value: app
+            - name: MYSQL_USER
+              value: app
+            - name: MYSQL_PASSWORD
+              value: prodpass
+            - name: MARIADB_AUTO_UPGRADE
+              value: '1'
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: db-data
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: ebal-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ebal-db
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: ebal-db
