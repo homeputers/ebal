@@ -62,6 +62,9 @@ This spins up MySQL, the PHP backend and Nginx, while the frontend runs through
 [http://localhost:8080](http://localhost:8080) for the app and `/api` for the
 API. Migrations are executed automatically on startup.
 
+Nginx removes the `/api` prefix before proxying requests to the PHP server so
+the backend sees clean URLs like `/members`.
+
 The Vite dev server binds to all interfaces so that Nginx can reach it within
 the Docker network.
 
