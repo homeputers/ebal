@@ -62,6 +62,9 @@ This spins up MySQL, the PHP backend and Nginx, while the frontend runs through
 [http://localhost:8080](http://localhost:8080) for the app and `/api` for the
 API. Migrations are executed automatically on startup.
 
+The Vite dev server binds to all interfaces so that Nginx can reach it within
+the Docker network.
+
 The Docker setup includes:
 - A multi-stage build process that compiles the React frontend and PHP backend
 - An Nginx service that serves static files and proxies API requests
