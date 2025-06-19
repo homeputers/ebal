@@ -5,22 +5,22 @@ PROFILE ?= qa
 COMPOSE_FILE = docker-compose.$(PROFILE).yml
 
 up:
-        docker compose -f $(COMPOSE_FILE) up -d
+	docker compose -f $(COMPOSE_FILE) up -d
 
 build:
-        docker compose -f $(COMPOSE_FILE) build --no-cache
+	docker compose -f $(COMPOSE_FILE) build --no-cache
 
 logs:
-        docker compose -f $(COMPOSE_FILE) logs -f
+	docker compose -f $(COMPOSE_FILE) logs -f
 
 down:
-        docker compose -f $(COMPOSE_FILE) down
+	docker compose -f $(COMPOSE_FILE) down
 
 ssh-app:
-        docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) sh
+	docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) sh
 
 migrate:
-        docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) php yii migrate --interactive=0
+	docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) php yii migrate --interactive=0
 
 rebuild: down build up logs
 
