@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebal-nginx
+spec:
+  selector:
+    matchLabels:
+      app: ebal-nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ebal-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: your-docker-registry/ebal-nginx:latest
+          env:
+            - name: ENV_SERVER_NAME
+              value: ebal.example.com
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ebal-nginx
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: ebal-nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ebal
+spec:
+  rules:
+    - host: ebal.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ebal-nginx
+                port:
+                  number: 80

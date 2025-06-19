@@ -75,13 +75,21 @@ The Docker setup includes:
 
 ## Deployment
 
-The application can be deployed to an external server using GitHub Actions. The deployment workflow:
+Production is deployed on a Kubernetes cluster.  The manifests under
+`k8s/` define deployments for the MariaDB database, the PHP
+application, and the Nginx ingress.  After building and pushing the
+`ebal-app` and `ebal-nginx` images to your registry, update the image
+references in the manifests and apply them:
 
-1. Connects to the target server via SSH
-2. Pulls the latest code from the main branch
-3. Rebuilds and starts the Docker containers
+```bash
+kubectl apply -f k8s/
+```
 
-To configure deployment:
+The previous Docker Compose workflow used for QA deployments remains
+available and can still be triggered via GitHub Actions using the
+secrets described below.
+
+To configure the QA deployment:
 1. Add the following secrets to your GitHub repository:
    - `SSH_PRIVATE_KEY`: SSH key for connecting to the server
    - `SSH_USER`: Username for SSH connection

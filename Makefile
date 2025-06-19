@@ -23,3 +23,9 @@ migrate:
         docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) php yii migrate --interactive=0
 
 rebuild: down build up logs
+
+k8s-apply:
+	kubectl apply -f k8s
+
+k8s-delete:
+	kubectl delete -f k8s
