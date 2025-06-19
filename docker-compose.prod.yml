@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_DSN: mysql:host=db;dbname=app
+      DB_USER: app
+      DB_PASS: prodpass
+    volumes:
+      - web-data:/var/www/html/web
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: prodpass
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: prodpass
+    volumes:
+      - db-data:/var/lib/mysql
+    command: --max_connections=200 --innodb_buffer_pool_size=1G
+    restart: unless-stopped
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "80:80"
+    volumes:
+      - web-data:/usr/share/nginx/html:ro
+    depends_on:
+      - app
+    environment:
+      - ENV_SERVER_NAME=${ENV_SERVER_NAME}
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  web-data:

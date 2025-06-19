@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_DSN: mysql:host=db;dbname=app
+      DB_USER: root
+      DB_PASS: example
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: app
+    volumes:
+      - db-data:/var/lib/mysql
+    command: --max_connections=20 --innodb_buffer_pool_size=32M
+    restart: unless-stopped
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "corepack enable && yarn install && yarn dev"
+    ports:
+      - '5173:5173'
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx/local.conf:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      - app
+      - frontend
+    environment:
+      - ENV_SERVER_NAME=${ENV_SERVER_NAME}
+    restart: unless-stopped
+
+volumes:
+  db-data:

@@ -49,16 +49,18 @@ Run `yarn build` to create a production bundle under `dist/`.
 
 ## Docker Development
 
-The project can be run locally using Docker with a multi-stage build process. Build the images and start the
-containers with:
+Docker compose files are provided for **local**, **QA**, and **production** setups.
+Choose the environment using the `PROFILE` variable in the `Makefile` (defaults
+to `qa`). For example, to start the local environment:
 
 ```bash
-docker-compose up --build
+make up PROFILE=local
 ```
 
-When running with Docker, the React frontend is served at
-[http://localhost:8080](http://localhost:8080) and API requests are available
-under `/api`. Migrations are executed automatically on startup.
+This spins up MySQL, the PHP backend and Nginx, while the frontend runs through
+`npm run dev` for hot reload. Navigate to
+[http://localhost:8080](http://localhost:8080) for the app and `/api` for the
+API. Migrations are executed automatically on startup.
 
 The Docker setup includes:
 - A multi-stage build process that compiles the React frontend and PHP backend
@@ -68,7 +70,7 @@ The Docker setup includes:
 - Resource limits for each container to optimize performance
 - Configurable server name for Nginx, allowing you to serve the application under a custom domain (e.g., `ebal.yourdomain.com`).
   - To set this locally, create a `.env` file in the project root (you can copy `.env.sample` to `.env` and modify it) with the line `ENV_SERVER_NAME=your.desired.domain` (e.g., `ENV_SERVER_NAME=ebal.localhost`).
-  - Your `docker-compose.yml` is already set up to use this variable.
+  - All compose files are already set up to use this variable.
   - Remember to update your local `/etc/hosts` file to point your chosen domain to `127.0.0.1` for local testing.
 
 ## Deployment
