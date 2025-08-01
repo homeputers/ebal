@@ -26,7 +26,7 @@ rebuild: down build up logs
 
 # Run backend PHP service locally
 local-backend:
-	php -S 127.0.0.1:9000 -t backend/web backend/web/index.php
+	cd backend && DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=app" DB_USER="root" DB_PASS="example" php -d display_errors=1 -d display_startup_errors=1 -d error_reporting=E_ALL -S 127.0.0.1:9000 -t web
 
 # Run frontend Vite web locally
 local-frontend:
