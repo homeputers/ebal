@@ -33,19 +33,15 @@ This will create the required tables such as the `user`, `member`, and `group`
 tables as well as the join table for member assignments.
 It also seeds a default **admin** user with password **admin123**.
 
+dependencies and start the dev server with live reload using:
+## Local Development (No Docker)
+
+You can run the backend and frontend directly on your machine. See `LOCAL_DEV.md` for step-by-step instructions.
+
 ## Frontend
 
 A lightweight React frontend lives in the `frontend` directory.  It is a small
-Node project managed with **yarn** and built with **Vite**.  Install the
-dependencies and start the dev server with live reload using:
-
-```bash
-cd frontend
-yarn install
-yarn dev
-```
-
-Run `yarn build` to create a production bundle under `dist/`.
+Node project managed with **yarn** and built with **Vite**.  See above or `LOCAL_DEV.md` for local dev instructions. Run `yarn build` to create a production bundle under `dist/`.
 
 ## Docker Development
 
