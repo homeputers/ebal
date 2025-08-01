@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
+import { useT } from '../i18n';
 
 interface Template { id: number; name: string; }
 
 export default function LineupTemplates({ token }: { token: string }) {
+  const t = useT();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [form, setForm] = useState<Omit<Template, 'id'>>({ name: '' });
   const [editing, setEditing] = useState<number | null>(null);
@@ -19,7 +21,7 @@ export default function LineupTemplates({ token }: { token: string }) {
 
   const submit = async () => {
     setError('');
-    if (!form.name.trim()) { setError('Name is required'); return; }
+    if (!form.name.trim()) { setError(t('Name is required')); return; }
     try {
       const res = await fetch(editing ? '/api/lineup-templates/' + editing : '/api/lineup-templates', {
         method: editing ? 'PUT' : 'POST',
@@ -28,7 +30,7 @@ export default function LineupTemplates({ token }: { token: string }) {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Request failed');
+        throw new Error(data.message || t('Request failed'));
       }
       setForm({ name: '' });
       setEditing(null);
@@ -46,15 +48,15 @@ export default function LineupTemplates({ token }: { token: string }) {
 
   return (
     <div className="container" style={{ maxWidth: '600px' }}>
-      <Link to="/dashboard" className="btn btn-link p-0 mb-2">&laquo; Back</Link>
-      <h2 className="mb-3">Lineup Templates</h2>
+      <Link to="/dashboard" className="btn btn-link p-0 mb-2">&laquo; {t('Back')}</Link>
+      <h2 className="mb-3">{t('Lineup Templates')}</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="mb-3">
-        <input className="form-control" placeholder="Name" value={form.name}
+        <input className="form-control" placeholder={t('Name')} value={form.name}
           onChange={e => setForm({ name: (e.target as HTMLInputElement).value })} />
         <div className="mt-2">
-          <button className="btn btn-primary" onClick={submit}>{editing ? 'Update' : 'Add'}</button>
-          {editing && <button className="btn btn-secondary ms-2" onClick={cancel}>Cancel</button>}
+          <button className="btn btn-primary" onClick={submit}>{editing ? t('Update') : t('Add')}</button>
+          {editing && <button className="btn btn-secondary ms-2" onClick={cancel}>{t('Cancel')}</button>}
         </div>
       </div>
       <ul className="list-group">
@@ -62,9 +64,9 @@ export default function LineupTemplates({ token }: { token: string }) {
           <li key={t.id} className="list-group-item d-flex justify-content-between">
             <span>{t.name}</span>
             <span>
-              <Link to={`/lineup-templates/${t.id}/groups`} className="btn btn-sm btn-outline-primary me-2">Groups</Link>
-              <button className="btn btn-sm btn-secondary me-2" onClick={() => edit(t)}>Edit</button>
-              <button className="btn btn-sm btn-danger" onClick={() => remove(t.id)}>Delete</button>
+              <Link to={`/lineup-templates/${t.id}/groups`} className="btn btn-sm btn-outline-primary me-2">{t('Groups')}</Link>
+              <button className="btn btn-sm btn-secondary me-2" onClick={() => edit(t)}>{t('Edit')}</button>
+              <button className="btn btn-sm btn-danger" onClick={() => remove(t.id)}>{t('Delete')}</button>
             </span>
           </li>
         ))}
