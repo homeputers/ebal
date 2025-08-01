@@ -24,6 +24,18 @@ migrate:
 
 rebuild: down build up logs
 
+# Run backend PHP service locally
+local-backend:
+	php -S 127.0.0.1:9000 -t backend/web backend/web/index.php
+
+# Run frontend Vite web locally
+local-frontend:
+	cd frontend && npm run dev
+
+# Run PHP database migrations locally
+local-migrate:
+	DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=app" DB_USER="root" DB_PASS="example" php backend/yii migrate --interactive=0
+
 k8s-apply:
 	kubectl apply -f k8s
 
