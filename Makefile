@@ -22,7 +22,7 @@ rebuild: down build up logs
 
 # Run backend PHP service locally
 local-backend:
-	php -S 0.0.0.0:9000 -t backend/web backend/web/index.php
+	php -S 127.0.0.1:9000 -t backend/web backend/web/index.php
 
 # Run frontend Vite web locally
 local-frontend:
