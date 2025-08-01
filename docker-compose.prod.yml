@@ -5,39 +5,37 @@ services:
     environment:
       DB_HOST: db
       DB_DSN: mysql:host=db;dbname=app
-      DB_USER: root
-      DB_PASS: example
+      DB_USER: app
+      DB_PASS: prodpass
     volumes:
       - web-data:/var/www/html/web
     depends_on:
       - db
-    mem_limit: 200m
     restart: unless-stopped
 
   db:
-    ports:
-    - "3306:3306"
     image: mariadb:10.6
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: prodpass
       MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: prodpass
+      MARIADB_AUTO_UPGRADE: '1'
     volumes:
       - db-data:/var/lib/mysql
-    command: --max_connections=20 --innodb_buffer_pool_size=32M
-    mem_limit: 256m
+    command: --max_connections=200 --innodb_buffer_pool_size=1G
     restart: unless-stopped
 
   nginx:
     build: ./docker/nginx
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - web-data:/usr/share/nginx/html:ro
     depends_on:
       - app
     environment:
       - ENV_SERVER_NAME=${ENV_SERVER_NAME}
-    mem_limit: 50m
     restart: unless-stopped
 
 volumes:

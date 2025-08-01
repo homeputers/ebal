@@ -1,28 +1,32 @@
 PROJECT_NAME=ebal
 
+# Select which compose file to use (local, qa, prod)
+PROFILE ?= qa
+COMPOSE_FILE = docker-compose.$(PROFILE).yml
+
 up:
-	docker compose up -d
+	docker compose -f $(COMPOSE_FILE) up -d
 
 build:
-	docker compose build --no-cache
+	docker compose -f $(COMPOSE_FILE) build --no-cache
 
 logs:
-	docker compose logs -f
+	docker compose -f $(COMPOSE_FILE) logs -f
 
 down:
-	docker compose down
+	docker compose -f $(COMPOSE_FILE) down
 
 ssh-app:
-	docker exec -it $$(docker compose ps -q app) sh
+	docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) sh
 
 migrate:
-	docker exec -it $$(docker compose ps -q app) php yii migrate --interactive=0
+	docker exec -it $$(docker compose -f $(COMPOSE_FILE) ps -q app) php yii migrate --interactive=0
 
 rebuild: down build up logs
 
 # Run backend PHP service locally
 local-backend:
-	php -S 127.0.0.1:9000 -t backend/web backend/web/index.php
+	cd backend && DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=app" DB_USER="root" DB_PASS="example" php -d display_errors=1 -d display_startup_errors=1 -d error_reporting=E_ALL -S 127.0.0.1:9000 -t web
 
 # Run frontend Vite web locally
 local-frontend:
@@ -31,3 +35,9 @@ local-frontend:
 # Run PHP database migrations locally
 local-migrate:
 	DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=app" DB_USER="root" DB_PASS="example" php backend/yii migrate --interactive=0
+
+k8s-apply:
+	kubectl apply -f k8s
+
+k8s-delete:
+	kubectl delete -f k8s

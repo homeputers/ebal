@@ -45,16 +45,28 @@ Node project managed with **yarn** and built with **Vite**.  See above or `LOCAL
 
 ## Docker Development
 
-The project can be run locally using Docker with a multi-stage build process. Build the images and start the
-containers with:
+Docker compose files are provided for **local**, **QA**, and **production** setups.
+Choose the environment using the `PROFILE` variable in the `Makefile` (defaults
+to `qa`). For example, to start the local environment:
 
 ```bash
-docker-compose up --build
+make up PROFILE=local
 ```
 
-When running with Docker, the React frontend is served at
-[http://localhost:8080](http://localhost:8080) and API requests are available
-under `/api`. Migrations are executed automatically on startup.
+This spins up MySQL, the PHP backend and Nginx, while the frontend runs through
+`npm run dev` for hot reload. Navigate to
+[http://localhost:8080](http://localhost:8080) for the app and `/api` for the
+API. Migrations are executed automatically on startup.
+
+Nginx removes the `/api` prefix before proxying requests to the PHP server so
+the backend sees clean URLs like `/members`.
+
+The Vite dev server binds to all interfaces so that Nginx can reach it within
+the Docker network.
+
+The MariaDB container is configured with `MARIADB_AUTO_UPGRADE=1` so it can
+start even if an older MySQL data directory already exists. If startup keeps
+failing, remove the `db-data` volume to initialize a fresh database.
 
 The Docker setup includes:
 - A multi-stage build process that compiles the React frontend and PHP backend
@@ -64,18 +76,26 @@ The Docker setup includes:
 - Resource limits for each container to optimize performance
 - Configurable server name for Nginx, allowing you to serve the application under a custom domain (e.g., `ebal.yourdomain.com`).
   - To set this locally, create a `.env` file in the project root (you can copy `.env.sample` to `.env` and modify it) with the line `ENV_SERVER_NAME=your.desired.domain` (e.g., `ENV_SERVER_NAME=ebal.localhost`).
-  - Your `docker-compose.yml` is already set up to use this variable.
+  - All compose files are already set up to use this variable.
   - Remember to update your local `/etc/hosts` file to point your chosen domain to `127.0.0.1` for local testing.
 
 ## Deployment
 
-The application can be deployed to an external server using GitHub Actions. The deployment workflow:
+Production is deployed on a Kubernetes cluster.  The manifests under
+`k8s/` define deployments for the MariaDB database, the PHP
+application, and the Nginx ingress.  After building and pushing the
+`ebal-app` and `ebal-nginx` images to your registry, update the image
+references in the manifests and apply them:
 
-1. Connects to the target server via SSH
-2. Pulls the latest code from the main branch
-3. Rebuilds and starts the Docker containers
+```bash
+kubectl apply -f k8s/
+```
 
-To configure deployment:
+The previous Docker Compose workflow used for QA deployments remains
+available and can still be triggered via GitHub Actions using the
+secrets described below.
+
+To configure the QA deployment:
 1. Add the following secrets to your GitHub repository:
    - `SSH_PRIVATE_KEY`: SSH key for connecting to the server
    - `SSH_USER`: Username for SSH connection

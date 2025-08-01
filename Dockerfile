@@ -36,4 +36,5 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 9000
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["php", "-S", "0.0.0.0:9000", "-t", "web"]
+# Use web/index.php as the router so pretty URLs work with the built-in server
+CMD ["php", "-S", "0.0.0.0:9000", "-t", "web", "web/index.php"]

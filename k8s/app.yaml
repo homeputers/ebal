@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebal-app
+spec:
+  selector:
+    matchLabels:
+      app: ebal-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ebal-app
+    spec:
+      containers:
+        - name: app
+          image: your-docker-registry/ebal-app:latest
+          env:
+            - name: DB_HOST
+              value: ebal-db
+            - name: DB_DSN
+              value: mysql:host=ebal-db;dbname=app
+            - name: DB_USER
+              value: app
+            - name: DB_PASS
+              value: prodpass
+          ports:
+            - containerPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ebal-app
+spec:
+  ports:
+    - port: 9000
+  selector:
+    app: ebal-app
